@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GalleryActivity extends Activity {
+    Toast mToast;
     private static Integer[] IMAGES = new Integer[] {
             R.drawable.gallery_photo_1,
             R.drawable.gallery_photo_2,
@@ -32,7 +33,9 @@ public class GalleryActivity extends Activity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Toast.makeText(GalleryActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(GalleryActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
+            mToast.setText((String) msg.obj);
+            mToast.show();
         }
     };
     List<Integer> SAMPLE_IMAGES ;
@@ -41,6 +44,7 @@ public class GalleryActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        mToast = Toast.makeText(GalleryActivity.this, "", Toast.LENGTH_SHORT);
         SAMPLE_IMAGES = new ArrayList<>(Arrays.asList(IMAGES));
 
         mButton = (Button) findViewById(R.id.add_more);
@@ -50,7 +54,7 @@ public class GalleryActivity extends Activity {
                 SAMPLE_IMAGES.add(1, R.drawable.poster2);
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.poster2);
                 bitmaps.add(bitmap);
-                mCoverFlow.requestRenderView();
+                mCoverFlow.requestRender();
             }
         });
         mCoverFlow = (CoverFlowOpenGL) findViewById(R.id.cover_flow);//new CoverFlowOpenGL(this);
@@ -84,7 +88,7 @@ public class GalleryActivity extends Activity {
             }
         });
 
-        //mCoverFlow.setSelection(0);
+        mCoverFlow.setSelection(IMAGES.length/2);
         mCoverFlow.setBackgroundTexture(R.drawable.bg);
 
         //setContentView(mCoverFlow);
