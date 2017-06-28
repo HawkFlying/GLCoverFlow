@@ -28,11 +28,14 @@ public class GalleryActivity extends Activity {
 
     private CoverFlowOpenGL mCoverFlow;
     private Button mButton;
+    private Toast mToast;
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Toast.makeText(GalleryActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(GalleryActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
+            mToast.setText((String) msg.obj);
+            mToast.show();
         }
     };
     List<Integer> SAMPLE_IMAGES ;
@@ -42,7 +45,7 @@ public class GalleryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         SAMPLE_IMAGES = new ArrayList<>(Arrays.asList(IMAGES));
-
+        mToast = Toast.makeText(GalleryActivity.this, "", Toast.LENGTH_SHORT);
         mButton = (Button) findViewById(R.id.add_more);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override

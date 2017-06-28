@@ -12,6 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.animation.AnimationUtils;
@@ -26,7 +27,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Renderer {
-	private static final String TAG = "AnotherCoverFlow";
+	private static final String tag = "AnotherCoverFlow";
 	
 	private static final int TOUCH_MINIMUM_MOVE = 5;
 	private static final int IMAGE_SIZE = 128; // the bitmap size we use for the texture
@@ -227,7 +228,10 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 			
 			startAnimation(-speed);
 		} else {
-			if (mTouchRect.contains(event.getX(), event.getY())) {
+			//if (mTouchRect.contains(event.getX(), event.getY()))
+			if (event.getX()>(mWidth/2-myW/2) && event.getX()<(mWidth/2+myW/2)
+					&&event.getY()>(getHeight()/2-myH/2) &&event.getY()<(getHeight()/2+myH/2))
+			{
 				mListener.topTileClicked(this, (int) (mOffset + 0.01));
 			}
 		}
@@ -398,10 +402,10 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		gl.glClearColor(0, 0, 0, 0);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		
+
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		
+
 		drawBg(gl);
 		draw(gl);
 	}
@@ -534,6 +538,8 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 		}
 	}
 
+	static int myW;
+	static int myH;
     private static Bitmap createTextureBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -558,9 +564,11 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
         } else {
             float left = (IMAGE_SIZE - width) / 2.0f;
             float top = (IMAGE_SIZE - height) / 2.0f;
-            cv.drawBitmap(bitmap, left, top, new Paint());
+			Log.e(tag, "left="+left +", top="+top +", w="+width +", h="+height);
+			cv.drawBitmap(bitmap, left, top, new Paint());
         }
-
+		myW = (int) (bitmap.getWidth() / SCALE);
+		myH = (int) (bitmap.getHeight() / SCALE);
         return bm;
     }
 
