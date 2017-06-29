@@ -12,6 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.animation.AnimationUtils;
@@ -26,7 +27,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Renderer {
-	private static final String TAG = "AnotherCoverFlow";
+	private static final String tag = CoverFlowOpenGL.class.getSimpleName();
 	
 	private static final int TOUCH_MINIMUM_MOVE = 5;
 	private static final int IMAGE_SIZE = 128; // the bitmap size we use for the texture
@@ -119,7 +120,7 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 //		setZOrderOnTop(true);
 //		setTranslationZ(10.0f);
 		
-		mCache = new DataCache<Integer, CoverFlowRecord>(MAX_TILES);
+		mCache = new DataCache<>(MAX_TILES);
         mLastOffset = 0;
 	    mOffset = 0;
 	    mInitBackground = false;
@@ -147,9 +148,9 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
         requestRender();
 	}
 
-	public void requestRenderView() {
-		requestRender();
-	}
+//	public void requestRenderView() {
+//		requestRender();
+//	}
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -227,7 +228,11 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 			
 			startAnimation(-speed);
 		} else {
-			if (mTouchRect.contains(event.getX(), event.getY())) {
+			//if (mTouchRect.contains(event.getX(), event.getY()))
+			if (event.getX()>(mWidth/2-myW/2) && event.getX()<(mWidth/2+myW/2)
+					&&event.getY()>(getHeight()/2-myH/2) &&event.getY()<(getHeight()/2+myH/2))
+			{
+				Log.e(tag, "mOffset=" + mOffset + ", pos=" + pos+", x="+event.getX()+", y="+ event.getY());
 				mListener.topTileClicked(this, (int) (mOffset + 0.01));
 			}
 		}
@@ -308,13 +313,13 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
 		/*if (getAnimation() != null)
 			return;*/
-		
+
 		mWidth = w;
 		
 		float imagew = w * 0.45f / SCALE / 2.0f;
 		float imageh = h * 0.45f / SCALE / 2.0f;
 		mTouchRect = new RectF(w / 2 - imagew, h / 2 - imageh, w / 2 + imagew, h / 2 + imageh);
-		
+
 		gl.glViewport(0, 0, w, h);
 	
 	    float ratio = ((float) w) / h;
@@ -398,10 +403,10 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		gl.glClearColor(0, 0, 0, 0);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		
+
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		
+
 		drawBg(gl);
 		draw(gl);
 	}
@@ -446,15 +451,17 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 	    // draw the left tiles
 	    for (i = iStartPos; i < mid; ++i) {
 	    	drawTile(i, i - offset, gl);
-	    }   
-	    
+	    }
+
 	    // draw the right tiles
 	    int iEndPos = mid + VISIBLE_TILES;
 	    if (iEndPos > max)
 	        iEndPos = max;
 	    for (i = iEndPos; i >= mid; --i) {
 	        drawTile(i, i - offset, gl);
+			//Log.i(TAG, "i " +i +", mid="+mid + ", i - offset=" + (i - offset));
 	    }
+	    //Log.e(TAG, "start " +iStartPos +", end="+iEndPos + ", mid=" + mid);
 
         if (mLastOffset != (int) offset) {
 	        mListener.tileOnTop(this, (int) offset);
@@ -534,6 +541,8 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 		}
 	}
 
+	static int myW;
+	static int myH;
     private static Bitmap createTextureBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -558,9 +567,11 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
         } else {
             float left = (IMAGE_SIZE - width) / 2.0f;
             float top = (IMAGE_SIZE - height) / 2.0f;
-            cv.drawBitmap(bitmap, left, top, new Paint());
+			Log.e(tag, "left="+left +", top="+top +", w="+width +", h="+height);
+			cv.drawBitmap(bitmap, left, top, new Paint());
         }
-
+		myW = (int) (bitmap.getWidth() / SCALE);
+		myH = (int) (bitmap.getHeight() / SCALE);
         return bm;
     }
 
