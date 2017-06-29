@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GalleryActivity extends Activity {
-    Toast mToast;
     private static Integer[] IMAGES = new Integer[] {
             R.drawable.gallery_photo_1,
             R.drawable.gallery_photo_2,
@@ -27,7 +26,7 @@ public class GalleryActivity extends Activity {
             R.drawable.gallery_photo_8
     };
 
-    private CoverFlowOpenGL mCoverFlow;
+    private GLCoverFlowView mCoverFlow;
     private Button mButton;
     private Toast mToast;
 
@@ -47,7 +46,6 @@ public class GalleryActivity extends Activity {
         setContentView(R.layout.main);
         mToast = Toast.makeText(GalleryActivity.this, "", Toast.LENGTH_SHORT);
         SAMPLE_IMAGES = new ArrayList<>(Arrays.asList(IMAGES));
-        mToast = Toast.makeText(GalleryActivity.this, "", Toast.LENGTH_SHORT);
         mButton = (Button) findViewById(R.id.add_more);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,32 +56,32 @@ public class GalleryActivity extends Activity {
                 mCoverFlow.requestRender();
             }
         });
-        mCoverFlow = (CoverFlowOpenGL) findViewById(R.id.cover_flow);//new CoverFlowOpenGL(this);
+        mCoverFlow = (GLCoverFlowView) findViewById(R.id.cover_flow);//new CoverFlowOpenGL(this);
 
         for (int i = 0; i < SAMPLE_IMAGES.size(); i++) {
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), SAMPLE_IMAGES.get(i));
             bitmaps.add(bitmap);
         }
         mCoverFlow.setList(bitmaps);
-        mCoverFlow.setCoverFlowListener(new CoverFlowOpenGL.CoverFlowListener() {
+        mCoverFlow.setCoverFlowListener(new GLCoverFlowView.CoverFlowListener() {
             @Override
-            public int getCount(CoverFlowOpenGL view) {
+            public int getCount(GLCoverFlowView view) {
                 return SAMPLE_IMAGES.size();
             }
 
             @Override
-            public Bitmap getImage(CoverFlowOpenGL anotherCoverFlow, int position) {
+            public Bitmap getImage(GLCoverFlowView anotherCoverFlow, int position) {
                 return BitmapFactory.decodeResource(getResources(), SAMPLE_IMAGES.get(position));
             }
 
             @Override
-            public void tileOnTop(CoverFlowOpenGL view, int position) {
+            public void tileOnTop(GLCoverFlowView view, int position) {
                 // you can control what will happen when one image is in middle
                 //mHandler.obtainMessage(0, String.format("Image %d is on top.", position)).sendToTarget();
             }
 
             @Override
-            public void topTileClicked(CoverFlowOpenGL view, int position) {
+            public void topTileClicked(GLCoverFlowView view, int position) {
                 // you can control what will happen when the image in middle is clicked
                 mHandler.obtainMessage(0, String.format("Image %d is clicked", position)).sendToTarget();
             }

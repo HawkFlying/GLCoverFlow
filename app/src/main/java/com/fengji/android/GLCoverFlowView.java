@@ -26,8 +26,8 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Renderer {
-	private static final String tag = CoverFlowOpenGL.class.getSimpleName();
+public class GLCoverFlowView extends GLSurfaceView implements GLSurfaceView.Renderer {
+	private static final String tag = GLCoverFlowView.class.getSimpleName();
 	
 	private static final int TOUCH_MINIMUM_MOVE = 5;
 	private static final int IMAGE_SIZE = 128; // the bitmap size we use for the texture
@@ -87,7 +87,7 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
     private CoverFlowListener mListener;
     private DataCache<Integer, CoverFlowRecord> mCache;
 
-	public CoverFlowOpenGL(Context context, AttributeSet attrs) {
+	public GLCoverFlowView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -107,7 +107,7 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
 		mBgBitmapId = 0;
 	}
 
-	public CoverFlowOpenGL(Context context) {
+	public GLCoverFlowView(Context context) {
 		super(context);
 		
 		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -648,9 +648,9 @@ public class CoverFlowOpenGL extends GLSurfaceView implements GLSurfaceView.Rend
     }
     
 	public static interface CoverFlowListener {
-		public int getCount(CoverFlowOpenGL view);				// Number of images to display
-		public Bitmap getImage(CoverFlowOpenGL anotherCoverFlow, int position);	// Image at position
-		public void tileOnTop(CoverFlowOpenGL view, int position); // Notify what tile is on top after scroll or start
-		public void topTileClicked(CoverFlowOpenGL view, int position);
+		public int getCount(GLCoverFlowView view);				// Number of images to display
+		public Bitmap getImage(GLCoverFlowView anotherCoverFlow, int position);	// Image at position
+		public void tileOnTop(GLCoverFlowView view, int position); // Notify what tile is on top after scroll or start
+		public void topTileClicked(GLCoverFlowView view, int position);
 	}
 }
