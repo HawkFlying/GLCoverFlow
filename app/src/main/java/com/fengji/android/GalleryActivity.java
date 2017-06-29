@@ -29,6 +29,7 @@ public class GalleryActivity extends Activity {
 
     private CoverFlowOpenGL mCoverFlow;
     private Button mButton;
+    private Toast mToast;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -46,7 +47,7 @@ public class GalleryActivity extends Activity {
         setContentView(R.layout.main);
         mToast = Toast.makeText(GalleryActivity.this, "", Toast.LENGTH_SHORT);
         SAMPLE_IMAGES = new ArrayList<>(Arrays.asList(IMAGES));
-
+        mToast = Toast.makeText(GalleryActivity.this, "", Toast.LENGTH_SHORT);
         mButton = (Button) findViewById(R.id.add_more);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
